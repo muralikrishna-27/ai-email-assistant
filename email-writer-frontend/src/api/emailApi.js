@@ -1,4 +1,4 @@
-const API_BASE = "https://email-writer-backend-uj4z.onrender.com/api/email";
+const API_BASE = import.meta.env.VITE_API_BASE;;
 
 const CLIENT_KEY = "email-extension-dev";
 
