@@ -22,4 +22,9 @@ public class EmailGeneratorController {
     public ResponseEntity<String> detectTone(@RequestBody EmailRequest req) {
         return ResponseEntity.ok(service.detectTone(req.getEmailContent()));
     }
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+        return ResponseEntity.ok("OK");
+    }
+
 }
