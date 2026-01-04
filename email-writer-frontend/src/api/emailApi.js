@@ -1,6 +1,4 @@
-// const API_BASE = "http://localhost:8080/api/email";
- const API_BASE = import.meta.env.VITE_API_URL + "/api/email";
-// const API_BASE = "http://email-assistant-backend:8080/api/email";
+const API_BASE = "https://email-writer-backend-uj4z.onrender.com/api/email";
 
 const CLIENT_KEY = "email-extension-dev";
 
