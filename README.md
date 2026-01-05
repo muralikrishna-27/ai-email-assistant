@@ -43,7 +43,7 @@ email-assistant/
 - Installed via Chrome Developer Mode
 
 📦 **Download (Private ZIP):**  
-👉 https://drive.google.com/file/d/1LaRMbH8Bx6ApI71e3OSXd3AreJSFpRci/view
+👉 https://drive.google.com/drive/folders/1Om58dGZ5Eu0p2ZytUHy1STkqtI28pUvn?usp=sharing
 
 ---
 
