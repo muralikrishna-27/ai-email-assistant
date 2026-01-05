@@ -117,18 +117,18 @@ function typewriterInsert(box, text) {
 }
 
 // ================= BACKGROUND =================
-function bg(type, payload, timeout = 15000) {
-  return new Promise(resolve => {
-    const timer = setTimeout(() => {
-      resolve({ ok: false, error: "Request timed out" });
-    }, timeout);
+// function bg(type, payload, timeout = 15000) {
+//   return new Promise(resolve => {
+//     const timer = setTimeout(() => {
+//       resolve({ ok: false, error: "Request timed out" });
+//     }, timeout);
 
-    chrome.runtime.sendMessage({ type, ...payload }, res => {
-      clearTimeout(timer);
-      resolve(res);
-    });
-  });
-}
+//     chrome.runtime.sendMessage({ type, ...payload }, res => {
+//       clearTimeout(timer);
+//       resolve(res);
+//     });
+//   });
+// }
 
 
 // ================= ACTIONS =================
@@ -142,14 +142,24 @@ async function detectTone() {
 
   status.innerText = "Detecting…";
 
-  const res = await bg("DETECT_TONE", { email: getEmailContent() });
+  try {
+    const res = await fetch("https://email-writer-backend-uj4z.onrender.com/api/email/detect-tone", 
+      {
 
-  if (res?.ok) {
-    const tone = res.data.trim().toLowerCase();
-    select.value = tone;
-    chip.innerText = `Detected Tone: ${tone}`;
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CLIENT-KEY": "email-extension-dev"
+        },
+        body: JSON.stringify({ emailContent: getEmailContent() })
+      }
+    );
+
+    const text = await res.text();
+    select.value = text.toLowerCase();
+    chip.innerText = `Detected Tone: ${text}`;
     status.innerText = "Tone detected ✔";
-  } else {
+  } catch {
     status.innerText = "Tone failed";
   }
 }
@@ -158,20 +168,32 @@ async function handleGenerate() {
   const box = getReplyBox();
   if (!box) return;
 
-  const payload = {
-    emailContent: getEmailContent(),
-    tone: document.getElementById("toneSelect").value
-  };
-
-  const res = await bg("GENERATE", { payload });
-if (res?.ok) {
-  typewriterInsert(box, res.data);
-  document.getElementById("generateBtn").innerText = "🔁 Regenerate";
-} else {
   const status = document.getElementById("aiStatus");
-  status.innerText = res?.error || "Generation failed";
-}
+  status.innerText = "Generating…";
 
+  try {
+    const res = await fetch("https://email-writer-backend-uj4z.onrender.com/api/email/generate", 
+      {
+
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CLIENT-KEY": "email-extension-dev"
+        },
+        body: JSON.stringify({
+          emailContent: getEmailContent(),
+          tone: document.getElementById("toneSelect").value
+        })
+      }
+    );
+
+    const text = await res.text();
+    typewriterInsert(box, text);
+    document.getElementById("generateBtn").innerText = "🔁 Regenerate";
+    status.innerText = "Done ✔";
+  } catch {
+    status.innerText = "Generation failed";
+  }
 }
 
 // ================= AI BUTTON =================
