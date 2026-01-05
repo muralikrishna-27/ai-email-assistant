@@ -81,7 +81,7 @@ function createPopup() {
       <option value="casual">Casual</option>
     </select>
 
-    <div id="aiStatus" class="ai-status">Ready</div>
+    <div id="aiStatus" class="ai-status" aria-live="polite">Ready</div>
     <button id="generateBtn" class="ai-btn">Generate Reply</button>
   `;
 
@@ -117,11 +117,19 @@ function typewriterInsert(box, text) {
 }
 
 // ================= BACKGROUND =================
-function bg(type, payload) {
+function bg(type, payload, timeout = 15000) {
   return new Promise(resolve => {
-    chrome.runtime.sendMessage({ type, ...payload }, resolve);
+    const timer = setTimeout(() => {
+      resolve({ ok: false, error: "Request timed out" });
+    }, timeout);
+
+    chrome.runtime.sendMessage({ type, ...payload }, res => {
+      clearTimeout(timer);
+      resolve(res);
+    });
   });
 }
+
 
 // ================= ACTIONS =================
 async function detectTone() {
@@ -156,10 +164,14 @@ async function handleGenerate() {
   };
 
   const res = await bg("GENERATE", { payload });
-  if (res?.ok) {
-    typewriterInsert(box, res.data);
-    document.getElementById("generateBtn").innerText = "🔁 Regenerate";
-  }
+if (res?.ok) {
+  typewriterInsert(box, res.data);
+  document.getElementById("generateBtn").innerText = "🔁 Regenerate";
+} else {
+  const status = document.getElementById("aiStatus");
+  status.innerText = res?.error || "Generation failed";
+}
+
 }
 
 // ================= AI BUTTON =================
