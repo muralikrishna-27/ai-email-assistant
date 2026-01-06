@@ -43,6 +43,20 @@ export default function App() {
 
         <Container maxWidth="md" sx={{ py: 5 }}>
           <ProcessHeader />
+          <div style={{
+  background: "#fff3cd",
+  color: "#856404",
+  padding: "10px 14px",
+  borderRadius: "6px",
+  marginBottom: "16px",
+  fontSize: "14px",
+  border: "1px solid #ffeeba"
+}}>
+  ⚠️ The backend is hosted on a free tier.  
+  The first request may take <b>30–60 seconds</b> if the server is idle.
+  Please wait patiently — the application is working.
+</div>
+
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <Paper elevation={8} sx={{ p: 4, borderRadius: 4 }}>
               <EmailInput value={emailContent} onChange={setEmailContent} />
